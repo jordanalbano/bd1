@@ -1,4 +1,4 @@
-package model;
+package ar.edu.tp.model;
 
 import java.time.LocalDate;
 

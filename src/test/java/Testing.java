@@ -1,4 +1,4 @@
-import model.*;
+import ar.edu.tp.model.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

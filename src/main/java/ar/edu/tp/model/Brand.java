@@ -1,10 +1,22 @@
-package model;
+package ar.edu.tp.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.Random;
+
+@Entity
 public class Brand {
+    @Id
+    private Long id;
     private String name;
 
     public Brand(String name) {
         this.name = name;
+        this.id = new Random().nextLong();
+    }
+
+    public Brand() {
+
     }
 
     public boolean equals(Object obj) {
@@ -18,7 +30,7 @@ public class Brand {
             return false;
         }
         Brand brand = (Brand) obj;
-        return this.name.equals(brand.name);
+        return this.name.equals(brand.name) && this.id.equals(brand.id);
     }
 
     public String name() {

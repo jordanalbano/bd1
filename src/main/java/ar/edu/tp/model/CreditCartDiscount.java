@@ -1,4 +1,4 @@
-package model;
+package ar.edu.tp.model;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
