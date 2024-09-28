@@ -1,7 +1,7 @@
 package ar.edu.tp.model;
 
 public class CreditCardProvider {
-    private String name;
+    private final String name;
 
     public CreditCardProvider(String name) {
         this.name = name;

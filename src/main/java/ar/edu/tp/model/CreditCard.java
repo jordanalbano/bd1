@@ -7,7 +7,11 @@ public class CreditCard {
     private String monthExpiration;
     private CreditCardProvider creditCardProvider;
 
-    public CreditCard(String number, String cvv, String yearExpiration, String monthExpiration, CreditCardProvider creditCardProvider) {
+    public CreditCard(String number,
+                      String cvv,
+                      String yearExpiration,
+                      String monthExpiration,
+                      CreditCardProvider creditCardProvider) {
         this.number = number;
         this.cvv = cvv;
         this.yearExpiration = yearExpiration;

@@ -17,7 +17,7 @@ public abstract class Discount {
 
     private void validateDates(LocalDate startDate, LocalDate endDate) {
         if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("The start date must be before the end date");
+            throw new IllegalArgumentException("la fecha de inicio no puede ser posterior a la fecha de fin");
         }
     }
 

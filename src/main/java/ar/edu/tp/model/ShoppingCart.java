@@ -2,7 +2,9 @@ package ar.edu.tp.model;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class ShoppingCart {
     private Client client;
@@ -31,5 +33,9 @@ public class ShoppingCart {
 
     public Set<ItemProduct> productItems() {
         return this.productItems;
+    }
+
+    public void addProductItemByProduct(List<Product> products) {
+        products.forEach(p -> addProductItem(new ItemProduct(p, 1, UUID.randomUUID().toString())));
     }
 }

@@ -9,17 +9,26 @@ public class Client {
     private String email;
     private String phone;
     private List<CreditCard> creditCards;
-    public Client(String name, String lastname, String dni, String email, String phone, List<CreditCard> creditCards) {
-        this.validate(name, lastname, dni, email, phone, creditCards);
+    public Client(String name,
+                  String lastname,
+                  String dni, String email,
+                  String phone,
+                  List<CreditCard> creditCards) {
         this.name = name;
         this.lastname = lastname;
         this.dni = dni;
         this.email = email;
         this.phone = phone;
         this.creditCards = creditCards;
+        this.validate();
     }
 
-    private void validate(String name, String lastname, String dni, String email, String phone, List<CreditCard> creditCards) {
+    public Client(String name, String lastname, String dni, String email) {
+        this(name, lastname, dni, email, null, null);
+    }
+
+
+    private void validate() {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name can't be null or empty");
         }
@@ -42,5 +51,27 @@ public class Client {
 
     private boolean isValidEmail(String email) {
         return email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+    }
+
+    public void update(Client newClient) {
+        newClient.validate();
+        this.name = newClient.name;
+        this.lastname = newClient.lastname;
+        this.dni = newClient.dni;
+        this.email = newClient.email;
+        this.phone = newClient.phone;
+        this.creditCards = newClient.creditCards;
+    }
+
+    public void addCard(CreditCard card) {
+        this.creditCards.add(card);
+    }
+
+    public List<CreditCard> creditCards() {
+        return this.creditCards;
+    }
+
+    public boolean cardBelongs(CreditCard card) {
+        return creditCards().stream().anyMatch(c -> c.equals(card));
     }
 }

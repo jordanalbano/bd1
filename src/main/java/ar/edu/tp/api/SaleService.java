@@ -5,7 +5,7 @@ import ar.edu.tp.model.Sale;
 import java.util.List;
 
 public interface SaleService {
-    //Crea una venta. El monto se calcula aplicando los descuentos a la fecha
+    // Crea una venta. El monto se calcula aplicando los descuentos a la fecha
     // validaciones:
     // - debe ser un cliente existente
     // - la lista de productos no debe estar vacía

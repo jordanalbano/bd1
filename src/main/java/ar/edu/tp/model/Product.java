@@ -10,7 +10,12 @@ public class Product {
     private BigDecimal price;
     private List<Discount> discounts;
     private Brand brand;
-    public Product(String code, String description, Category category, BigDecimal price, List<Discount> discounts, Brand brand) {
+    public Product(String code,
+                   String description,
+                   Category category,
+                   BigDecimal price,
+                   List<Discount> discounts,
+                   Brand brand) {
         this.validate(code, description, category, price, discounts, brand);
         this.code = code;
         this.description = description;
@@ -19,6 +24,11 @@ public class Product {
         this.discounts = discounts;
         this.brand = brand;
     }
+
+    public Product(String code, String description, BigDecimal price, Category category) {
+        this(code, description, category, price, List.of(), null);
+    }
+
 
     private void validate(String code, String description, Category category, BigDecimal price, List<Discount> discounts, Brand brand) {
         if (code == null || code.isEmpty()) {
@@ -47,5 +57,15 @@ public class Product {
 
     public Brand brand() {
         return this.brand;
+    }
+
+    public void update(Product newProduct) {
+        this.validate(newProduct.code, newProduct.description, newProduct.category, newProduct.price, newProduct.discounts, newProduct.brand);
+        this.code = newProduct.code;
+        this.description = newProduct.description;
+        this.category = newProduct.category;
+        this.price = newProduct.price;
+        this.discounts = newProduct.discounts;
+        this.brand = newProduct.brand;
     }
 }
