@@ -6,6 +6,7 @@ public class CreditCard {
     private String yearExpiration;
     private String monthExpiration;
     private CreditCardProvider creditCardProvider;
+    private Client client;
 
     public CreditCard(String number,
                       String cvv,
@@ -18,5 +19,7 @@ public class CreditCard {
         this.monthExpiration = monthExpiration;
         this.creditCardProvider = creditCardProvider;
     }
-
+    public void client(Client client){
+        this.client = client;
+    }
 }

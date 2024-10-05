@@ -3,6 +3,7 @@ package ar.edu.tp.model;
 import java.util.List;
 
 public class Client {
+    private String id;
     private String name;
     private String lastname;
     private String dni;
@@ -73,5 +74,8 @@ public class Client {
 
     public boolean cardBelongs(CreditCard card) {
         return creditCards().stream().anyMatch(c -> c.equals(card));
+    }
+    public String id() {
+        return id;
     }
 }

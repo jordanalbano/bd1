@@ -1,16 +1,15 @@
 package ar.edu.tp.model;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ShoppingCart {
-    private Client client;
+    private final String id;
+    private final Client client;
     Set<ItemProduct> productItems;
 
     public ShoppingCart(Client client) {
+        this.id = UUID.randomUUID().toString();
         this.client = client;
     }
 
@@ -20,7 +19,7 @@ public class ShoppingCart {
 
 
     public void addProductItem(ItemProduct itemProduct) {
-        if (productItems == null) {
+        if (Objects.isNull(productItems)) {
             productItems = new HashSet<>();
         }
         var productItem = productItems.stream().filter(r -> r.equals(itemProduct)).findFirst();
@@ -38,4 +37,18 @@ public class ShoppingCart {
     public void addProductItemByProduct(List<Product> products) {
         products.forEach(p -> addProductItem(new ItemProduct(p, 1, UUID.randomUUID().toString())));
     }
+
+    public void validate() {
+        if (Objects.isNull(client)) {
+            throw new RuntimeException("El cliente no puede ser nulo");
+        }
+        if (Objects.isNull(productItems)) {
+            throw new RuntimeException("El carrito de compras no puede ser nulo");
+        }
+    }
+
+    public String id() {
+        return id;
+    }
+
 }

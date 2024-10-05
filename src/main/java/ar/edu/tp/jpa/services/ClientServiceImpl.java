@@ -4,6 +4,7 @@ import ar.edu.tp.api.ClientService;
 import ar.edu.tp.model.Client;
 import ar.edu.tp.model.CreditCard;
 import ar.edu.tp.model.CreditCardProvider;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,7 +12,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class ClientServiceImpl implements ClientService {
     private final EntityManagerFactory emf;
 

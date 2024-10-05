@@ -1,4 +1,4 @@
-package exceptions;
+package ar.edu.tp.exceptions;
 
 public class CreditCartDiscountAlreadyExistException extends RuntimeException {
     public CreditCartDiscountAlreadyExistException() {

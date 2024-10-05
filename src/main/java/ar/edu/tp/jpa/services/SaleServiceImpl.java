@@ -2,8 +2,9 @@ package ar.edu.tp.jpa.services;
 
 import ar.edu.tp.api.SaleService;
 import ar.edu.tp.model.*;
-import exceptions.BadRequestException;
-import exceptions.EntityNotFoundException;
+import ar.edu.tp.exceptions.BadRequestException;
+import ar.edu.tp.exceptions.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,7 +12,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class SaleServiceImpl implements SaleService {
     private final EntityManagerFactory emf;
 
@@ -66,5 +67,33 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<Sale> ventas() {
         return List.of();
+    }
+
+    @Override
+    public void create(Sale sale) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            sale.validate();
+            var clientInDB = Optional.ofNullable(em.find(Client.class, sale.client().id()));
+            if (clientInDB.isEmpty()) {
+                throw new EntityNotFoundException("El cliente no existe");
+            }
+            var shoppingCart = Optional.ofNullable(em.find(ShoppingCart.class, sale.shoppingCart().id()));
+            if (shoppingCart.isEmpty()) {
+                throw new EntityNotFoundException("El carrito de compras no existe");
+            }
+            sale.init();
+            tx.begin();
+            em.persist(sale);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw new RuntimeException(e);
+        } finally {
+            if (em.isOpen())
+                em.close();
+            emf.close();
+        }
     }
 }

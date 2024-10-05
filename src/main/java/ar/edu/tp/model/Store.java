@@ -1,6 +1,6 @@
 package ar.edu.tp.model;
 
-import exceptions.CreditCartDiscountAlreadyExistException;
+import ar.edu.tp.exceptions.CreditCartDiscountAlreadyExistException;
 
 import java.math.BigDecimal;
 import java.util.List;
