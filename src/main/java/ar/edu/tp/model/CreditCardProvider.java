@@ -1,10 +1,25 @@
 package ar.edu.tp.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
+
+import java.util.UUID;
+
+@Entity
+@Getter
 public class CreditCardProvider {
-    private final String name;
+    @Id
+    private String id;
+    private String name;
 
     public CreditCardProvider(String name) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
+    }
+
+    public CreditCardProvider() {
+
     }
 
     public boolean equals(Object obj) {
@@ -19,4 +34,5 @@ public class CreditCardProvider {
         }
         CreditCardProvider creditCardProvider = (CreditCardProvider) obj;
         return this.name.equals(creditCardProvider.name);
-    }}
+    }
+}

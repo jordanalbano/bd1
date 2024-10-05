@@ -1,13 +1,22 @@
 package ar.edu.tp.model;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
+@Getter
 public class Sale {
     private LocalDateTime createdOn;
+    @ManyToOne
     private Client client;
+    @OneToMany(mappedBy = "sale")
     private ShoppingCart shoppingCart;
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private BigDecimal totalPrice;
     public Sale(Client client,

@@ -4,12 +4,12 @@ import ar.edu.tp.api.ProductService;
 import ar.edu.tp.model.Category;
 import ar.edu.tp.model.Client;
 import ar.edu.tp.model.Product;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ public class ProductServiceImpl implements ProductService {
     private final EntityManagerFactory emf;
 
     public ProductServiceImpl() {
-        this.emf = Persistence.createEntityManagerFactory("jpa-objectdb");
+        this.emf = Persistence.createEntityManagerFactory("jpa-mysql");
     }
 
     @Override

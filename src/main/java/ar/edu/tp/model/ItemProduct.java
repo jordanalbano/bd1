@@ -7,10 +7,12 @@ public class ItemProduct {
     private final String code;
     private final BigDecimal price;
     private final Product product;
-    public ItemProduct(Product product, int quantity, String code) {
+    private final ShoppingCart shoppingCart;
+    public ItemProduct(Product product, int quantity, String code, ShoppingCart shoppingCart) {
         this.quantity = quantity;
         this.code = code;
         this.product = product;
+        this.shoppingCart = shoppingCart;
         this.price = product.price().multiply(BigDecimal.valueOf(quantity));
     }
     public BigDecimal price() {

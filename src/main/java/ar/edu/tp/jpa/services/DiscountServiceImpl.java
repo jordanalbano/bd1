@@ -4,12 +4,12 @@ import ar.edu.tp.api.DiscountService;
 import ar.edu.tp.model.Brand;
 import ar.edu.tp.model.BrandDiscount;
 import ar.edu.tp.model.Discount;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +18,7 @@ public class DiscountServiceImpl implements DiscountService {
     private final EntityManagerFactory emf;
 
     public DiscountServiceImpl() {
-        this.emf = Persistence.createEntityManagerFactory("jpa-objectdb");
+        this.emf = Persistence.createEntityManagerFactory("jpa-mysql");
 
     }
 

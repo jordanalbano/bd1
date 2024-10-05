@@ -25,7 +25,7 @@ public class Testing {
         var creditCartDiscount = new CreditCartDiscount(LocalDate.now().minusDays(5), LocalDate.now().minusDays(1), creditCartProvider, 5);
         store.addCreditCardDiscount(creditCartDiscount);
         var shoppingCart = new ShoppingCart(client);
-        shoppingCart.addProductItem(new ItemProduct(product, 2, "1"));
+        shoppingCart.addProductItem(new ItemProduct(product, 2, "1", this));
         var totalAmount = store.calculateTotalAmountOfCart(shoppingCart, creditCartProvider);
         assertEquals(new BigDecimal(200), totalAmount);
     }

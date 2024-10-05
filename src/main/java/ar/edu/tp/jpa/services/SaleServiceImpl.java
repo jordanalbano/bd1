@@ -4,12 +4,12 @@ import ar.edu.tp.api.SaleService;
 import ar.edu.tp.model.*;
 import ar.edu.tp.exceptions.BadRequestException;
 import ar.edu.tp.exceptions.EntityNotFoundException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -17,7 +17,7 @@ public class SaleServiceImpl implements SaleService {
     private final EntityManagerFactory emf;
 
     public SaleServiceImpl() {
-        this.emf = Persistence.createEntityManagerFactory("jpa-objectdb");
+        this.emf = Persistence.createEntityManagerFactory("jpa-mysql");
 
     }
 

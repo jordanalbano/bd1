@@ -1,7 +1,8 @@
 package ar.edu.tp.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 import java.util.Random;
 
 @Entity

@@ -2,11 +2,11 @@ package ar.edu.tp.jpa.services;
 
 import ar.edu.tp.api.ShoppingCartService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import java.math.BigDecimal;
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {

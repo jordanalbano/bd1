@@ -1,14 +1,23 @@
 package ar.edu.tp.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
 import java.util.List;
+import java.util.UUID;
+
+@Entity
 
 public class Client {
+    @Id
     private String id;
     private String name;
     private String lastname;
     private String dni;
     private String email;
     private String phone;
+    @OneToMany
     private List<CreditCard> creditCards;
     public Client(String name,
                   String lastname,
@@ -21,6 +30,7 @@ public class Client {
         this.email = email;
         this.phone = phone;
         this.creditCards = creditCards;
+        this.id = UUID.randomUUID().toString();
         this.validate();
     }
 

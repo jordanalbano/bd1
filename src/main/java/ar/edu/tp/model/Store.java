@@ -61,7 +61,7 @@ public class Store {
     }
 
     public BigDecimal calculateTotalAmountOfCart(ShoppingCart shoppingCart, CreditCardProvider creditCartProvider) {
-        var totalAmountWithDiscountBran = shoppingCart.productItems.stream().map(r -> {
+        var totalAmountWithDiscountBran = shoppingCart.getProductItems().stream().map(r -> {
             var discountOptional = this.brandDiscounts.stream().filter(discount -> discount.isActive() && discount.applicableToBrand(r.productBrand())).findFirst();
             return discountOptional.map(brandDiscount -> r.price().subtract(brandDiscount.calculateDiscountedPrice(r.price()))).orElseGet(r::price);
         }).reduce(BigDecimal.ZERO, BigDecimal::add);

@@ -1,13 +1,20 @@
 package ar.edu.tp.model;
 
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.util.*;
-
+@Getter
 public class ShoppingCart {
     private final String id;
+    @ManyToOne
     private final Client client;
-    Set<ItemProduct> productItems;
-
+    @OneToMany(mappedBy = "shoppingCart")
+    private Set<ItemProduct> productItems;
+    @ManyToOne
+    private Sale sale;
     public ShoppingCart(Client client) {
         this.id = UUID.randomUUID().toString();
         this.client = client;
@@ -35,7 +42,7 @@ public class ShoppingCart {
     }
 
     public void addProductItemByProduct(List<Product> products) {
-        products.forEach(p -> addProductItem(new ItemProduct(p, 1, UUID.randomUUID().toString())));
+        products.forEach(p -> addProductItem(new ItemProduct(p, 1, UUID.randomUUID().toString(), this)));
     }
 
     public void validate() {
