@@ -17,9 +17,9 @@ import java.util.List;
 public class DiscountServiceImpl implements DiscountService {
     private final EntityManagerFactory emf;
 
-    public DiscountServiceImpl() {
-        this.emf = Persistence.createEntityManagerFactory("jpa-mysql");
+    public DiscountServiceImpl(EntityManagerFactory emf) {
 
+        this.emf = emf;
     }
 
     @Override

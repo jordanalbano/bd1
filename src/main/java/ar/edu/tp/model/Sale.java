@@ -1,9 +1,6 @@
 package ar.edu.tp.model;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -19,6 +16,8 @@ public class Sale {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private BigDecimal totalPrice;
+    @Version
+    private Long version;
     public Sale(Client client,
                 ShoppingCart shoppingCart,
                 PaymentMethod paymentMethod) {

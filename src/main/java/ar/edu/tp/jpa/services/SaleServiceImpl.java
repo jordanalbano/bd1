@@ -16,9 +16,9 @@ import java.util.Optional;
 public class SaleServiceImpl implements SaleService {
     private final EntityManagerFactory emf;
 
-    public SaleServiceImpl() {
-        this.emf = Persistence.createEntityManagerFactory("jpa-mysql");
+    public SaleServiceImpl(EntityManagerFactory emf) {
 
+        this.emf = emf;
     }
 
     @Override

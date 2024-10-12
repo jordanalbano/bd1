@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-
 public class Client {
     @Id
     private String id;
@@ -36,6 +35,10 @@ public class Client {
 
     public Client(String name, String lastname, String dni, String email) {
         this(name, lastname, dni, email, null, null);
+    }
+
+    public Client() {
+
     }
 
 

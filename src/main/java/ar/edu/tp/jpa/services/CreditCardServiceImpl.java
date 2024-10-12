@@ -1,7 +1,6 @@
 package ar.edu.tp.jpa.services;
 
 import ar.edu.tp.api.CreditCardService;
-import ar.edu.tp.model.Client;
 import ar.edu.tp.model.CreditCard;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -15,8 +14,8 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     private final EntityManagerFactory emf;
 
-    public CreditCardServiceImpl() {
-        this.emf = Persistence.createEntityManagerFactory("jpa-mysql");
+    public CreditCardServiceImpl(EntityManagerFactory emf) {
+        this.emf = emf;
     }
     @Override
     public Collection<CreditCard> findAllByClientId(String id) {
