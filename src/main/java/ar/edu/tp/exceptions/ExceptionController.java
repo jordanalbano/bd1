@@ -1,5 +1,6 @@
 package ar.edu.tp.exceptions;
 
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,13 @@ public class ExceptionController {
         var errorDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         errorDetail.setTitle("Error interno");
         errorDetail.setDetail("Ocurrio un error al ejecutar la peticion");
+        return ResponseEntity.internalServerError().body(errorDetail);
+    }
+    @ExceptionHandler(value = OptimisticLockException.class)
+    public ResponseEntity<?> optimisticLockException(OptimisticLockException e) {
+        var errorDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        errorDetail.setTitle("Ups, algo salio mal");
+        errorDetail.setDetail("El recurso que intenta modificar fue modificado por otro usuario");
         return ResponseEntity.internalServerError().body(errorDetail);
     }
 
