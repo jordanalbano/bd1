@@ -1,4 +1,4 @@
-package ar.unrn.tp.modelo;
+package ar.edu.tp.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,28 +10,30 @@ public class NextNumber {
     @Id
     private long id;
 
-    private int anio;
-    private int actual;
+    private int year;
+    private int current;
 
     public NextNumber(int anio, int actual) {
-        this.anio = anio;
-        this.actual = actual;
+        this.year = anio;
+        this.current = actual;
     }
 
     protected NextNumber() {
+        this.current = 0;
+        this.year = 0;
     }
 
     public int recuperarSiguiente() {
-        this.actual += 1;
-        return this.actual;
+        this.current += 1;
+        return this.current;
     }
 
     public int anio() {
-        return this.anio;
+        return this.year;
     }
 
     public int actual() {
-        return this.actual;
+        return this.current;
     }
 
     private long getId() {
@@ -43,19 +45,19 @@ public class NextNumber {
     }
 
     private int getAnio() {
-        return anio;
+        return year;
     }
 
     private void setAnio(int anio) {
-        this.anio = anio;
+        this.year = anio;
     }
 
     private int getActual() {
-        return actual;
+        return current;
     }
 
-    private void setActual(int actual) {
-        this.actual = actual;
+    private void setActual(int current) {
+        this.current = current;
     }
 
 }

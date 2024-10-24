@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
 @Getter
 public class Sale {
     private LocalDateTime createdOn;
@@ -16,11 +17,15 @@ public class Sale {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private BigDecimal totalPrice;
-    @Version
-    private Long version;
+    private final NextNumber uniqueNumber;
+
     public Sale(Client client,
                 ShoppingCart shoppingCart,
-                PaymentMethod paymentMethod) {
+                PaymentMethod paymentMethod, NextNumber uniqueNumber) {
+        this.client = client;
+        this.shoppingCart = shoppingCart;
+        this.paymentMethod = paymentMethod;
+        this.uniqueNumber = uniqueNumber;
 
     }
 

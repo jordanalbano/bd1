@@ -4,14 +4,13 @@ import ar.edu.tp.api.SaleService;
 import ar.edu.tp.model.*;
 import ar.edu.tp.exceptions.BadRequestException;
 import ar.edu.tp.exceptions.EntityNotFoundException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class SaleServiceImpl implements SaleService {
     private final EntityManagerFactory emf;
@@ -45,9 +44,20 @@ public class SaleServiceImpl implements SaleService {
             if (client.get().cardBelongs(card)) {
                 throw new BadRequestException("La tarjeta no pertenece al cliente");
             }
-            var sale = new Sale(client.get(), shoppingCart, PaymentMethod.CARD);
-            em.persist(sale);
+            NextNumber uniqueNumber;
+            Calendar calendar = Calendar.getInstance();
+            int actualYear = calendar.get(Calendar.YEAR);
+            try {
+                TypedQuery<NextNumber> query = em.createQuery("select n from NextNumber n where year = :actualYear", NextNumber.class);
+                query.setParameter("actualYear", actualYear);
+                query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+                uniqueNumber = query.getSingleResult();
 
+            } catch (NoResultException e) {
+                uniqueNumber = new NextNumber(calendar.get(Calendar.YEAR), 0);
+            }
+            var sale = new Sale(client.get(), shoppingCart, PaymentMethod.CARD, uniqueNumber);
+            em.persist(sale);
         } catch (Exception e) {
             tx.rollback();
             throw new RuntimeException(e);

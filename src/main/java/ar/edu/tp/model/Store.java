@@ -56,7 +56,7 @@ public class Store {
     }
 
     public void addSale(Client client, ShoppingCart shoppingCart, PaymentMethod paymentMethod) {
-        var sale = new Sale(client, shoppingCart, paymentMethod);
+        var sale = new Sale(client, shoppingCart, paymentMethod, new NextNumber());
         this.sales.add(sale);
     }
 
