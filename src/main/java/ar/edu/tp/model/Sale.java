@@ -17,11 +17,11 @@ public class Sale {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private BigDecimal totalPrice;
-    private final NextNumber uniqueNumber;
+    private final String uniqueNumber;
 
     public Sale(Client client,
                 ShoppingCart shoppingCart,
-                PaymentMethod paymentMethod, NextNumber uniqueNumber) {
+                PaymentMethod paymentMethod, String uniqueNumber) {
         this.client = client;
         this.shoppingCart = shoppingCart;
         this.paymentMethod = paymentMethod;

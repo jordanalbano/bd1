@@ -3,13 +3,16 @@ package ar.edu.tp.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class NextNumber {
 
     @Id
     private long id;
-
+    @Version
+    private Long version;
     private int year;
     private int current;
 
@@ -28,36 +31,5 @@ public class NextNumber {
         return this.current;
     }
 
-    public int anio() {
-        return this.year;
-    }
-
-    public int actual() {
-        return this.current;
-    }
-
-    private long getId() {
-        return id;
-    }
-
-    private void setId(long id) {
-        this.id = id;
-    }
-
-    private int getAnio() {
-        return year;
-    }
-
-    private void setAnio(int anio) {
-        this.year = anio;
-    }
-
-    private int getActual() {
-        return current;
-    }
-
-    private void setActual(int current) {
-        this.current = current;
-    }
 
 }

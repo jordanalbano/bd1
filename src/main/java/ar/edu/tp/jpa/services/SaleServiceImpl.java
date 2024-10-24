@@ -7,8 +7,10 @@ import ar.edu.tp.exceptions.EntityNotFoundException;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -21,42 +23,27 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public void makeSale(Long idCliente, List<Long> products, Long cardId) {
+    public void makeSale(Long clientId, List<Long> products, Long cardId) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            var client = Optional.ofNullable(em.find(Client.class, idCliente));
+            var client = Optional.ofNullable(em.find(Client.class, clientId));
             if (client.isEmpty()) {
                 throw new EntityNotFoundException("La lista de productos no puede estar vacía");
             }
             var card = em.find(CreditCard.class, cardId);
-            if (card == null) {
+            if (Objects.isNull(card)) {
                 throw new EntityNotFoundException("La tarjeta no existe");
             }
             var shoppingCart = new ShoppingCart(client.get());
-            var productsList = em.createQuery("SELECT p " +
-                            "FROM Product p WHERE p.id IN :products", Product.class)
-                    .setParameter("products", products)
-                    .getResultList();
+            var productsList = findAllProducts(em, products);
             shoppingCart.addProductItemByProduct(productsList);
-
             if (client.get().cardBelongs(card)) {
                 throw new BadRequestException("La tarjeta no pertenece al cliente");
             }
-            NextNumber uniqueNumber;
-            Calendar calendar = Calendar.getInstance();
-            int actualYear = calendar.get(Calendar.YEAR);
-            try {
-                TypedQuery<NextNumber> query = em.createQuery("select n from NextNumber n where year = :actualYear", NextNumber.class);
-                query.setParameter("actualYear", actualYear);
-                query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
-                uniqueNumber = query.getSingleResult();
-
-            } catch (NoResultException e) {
-                uniqueNumber = new NextNumber(calendar.get(Calendar.YEAR), 0);
-            }
-            var sale = new Sale(client.get(), shoppingCart, PaymentMethod.CARD, uniqueNumber);
+            NextNumber uniqueNumber = findUniqueNumber(em);
+            var sale = new Sale(client.get(), shoppingCart, PaymentMethod.CARD, String.valueOf(uniqueNumber.recuperarSiguiente() + LocalDate.now().getYear()));
             em.persist(sale);
         } catch (Exception e) {
             tx.rollback();
@@ -67,6 +54,26 @@ public class SaleServiceImpl implements SaleService {
             emf.close();
         }
 
+    }
+
+    private List<Product> findAllProducts(EntityManager em, List<Long> products) {
+        return em.createQuery("SELECT p " +
+                "FROM Product p WHERE p.id IN :products", Product.class)
+            .setParameter("products", products)
+            .getResultList();
+    }
+
+    private NextNumber findUniqueNumber(EntityManager em) {
+        Calendar calendar = Calendar.getInstance();
+        int actualYear = calendar.get(Calendar.YEAR);
+        try {
+            TypedQuery<NextNumber> query = em.createQuery("select n from NextNumber n where year = :actualYear", NextNumber.class);
+            query.setParameter("actualYear", actualYear);
+            query.setLockMode(LockModeType.OPTIMISTIC);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return new NextNumber(calendar.get(Calendar.YEAR), 0);
+        }
     }
 
     @Override
