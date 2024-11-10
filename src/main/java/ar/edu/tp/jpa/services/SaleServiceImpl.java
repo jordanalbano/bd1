@@ -43,7 +43,7 @@ public class SaleServiceImpl implements SaleService {
                 throw new BadRequestException("La tarjeta no pertenece al cliente");
             }
             NextNumber uniqueNumber = findUniqueNumber(em);
-            var sale = new Sale(client.get(), shoppingCart, PaymentMethod.CARD, String.valueOf(uniqueNumber.recuperarSiguiente() + LocalDate.now().getYear()));
+            var sale =  new Sale(client.get(), shoppingCart, PaymentMethod.CARD, String.valueOf(uniqueNumber.recuperarSiguiente() + LocalDate.now().getYear()));
             em.persist(sale);
         } catch (Exception e) {
             tx.rollback();
