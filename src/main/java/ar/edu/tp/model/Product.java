@@ -1,15 +1,32 @@
 package ar.edu.tp.model;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.math.BigDecimal;
 import java.util.List;
-
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Product {
+    @Id
+    @UuidGenerator
+    private String id;
     private String code;
     private String description;
+    @ManyToOne
     private Category category;
     private BigDecimal price;
+    @OneToMany
     private List<Discount> discounts;
+    @ManyToOne
     private Brand brand;
+    @Version
+    private Long version;
     public Product(String code,
                    String description,
                    Category category,

@@ -1,7 +1,6 @@
 package ar.edu.tp.jpa.services;
 
 import ar.edu.tp.api.ClientService;
-import ar.edu.tp.jpa.JpaClientRepository;
 import ar.edu.tp.model.Client;
 import ar.edu.tp.model.CreditCard;
 import ar.edu.tp.model.CreditCardProvider;

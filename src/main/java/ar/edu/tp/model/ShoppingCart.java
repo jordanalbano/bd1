@@ -1,23 +1,32 @@
 package ar.edu.tp.model;
 
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.util.*;
 @Getter
+@Entity
+@Setter
+
 public class ShoppingCart {
-    private final String id;
+    @Id
+    @UuidGenerator
+    private  String id;
     @ManyToOne
-    private final Client client;
+    private  Client client;
     @OneToMany(mappedBy = "shoppingCart")
     private Set<ItemProduct> productItems;
-    @ManyToOne
-    private Sale sale;
+    private BigDecimal total;
     public ShoppingCart(Client client) {
         this.id = UUID.randomUUID().toString();
         this.client = client;
+    }
+
+    public ShoppingCart() {
+
     }
 
     public BigDecimal calculateTotal() {
@@ -58,4 +67,7 @@ public class ShoppingCart {
         return id;
     }
 
+    public void perform() {
+        this.total = this.calculateTotal();
+    }
 }

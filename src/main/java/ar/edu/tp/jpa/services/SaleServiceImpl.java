@@ -6,6 +6,7 @@ import ar.edu.tp.exceptions.BadRequestException;
 import ar.edu.tp.exceptions.EntityNotFoundException;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -23,6 +24,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
+
     public void makeSale(Long clientId, List<Long> products, Long cardId) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -43,8 +45,9 @@ public class SaleServiceImpl implements SaleService {
                 throw new BadRequestException("La tarjeta no pertenece al cliente");
             }
             NextNumber uniqueNumber = findUniqueNumber(em);
-            var sale = new Sale(client.get(), shoppingCart, PaymentMethod.CARD, String.valueOf(uniqueNumber.recuperarSiguiente() + LocalDate.now().getYear()));
+            var sale = new Sale(client.get(), shoppingCart, PaymentMethod.CARD, uniqueNumber.recuperarSiguiente() + "-" + LocalDate.now().getYear());
             em.persist(sale);
+            em.merge(uniqueNumber);
         } catch (Exception e) {
             tx.rollback();
             throw new RuntimeException(e);
@@ -55,7 +58,6 @@ public class SaleServiceImpl implements SaleService {
         }
 
     }
-
     private List<Product> findAllProducts(EntityManager em, List<Long> products) {
         return em.createQuery("SELECT p " +
                 "FROM Product p WHERE p.id IN :products", Product.class)
@@ -69,10 +71,10 @@ public class SaleServiceImpl implements SaleService {
         try {
             TypedQuery<NextNumber> query = em.createQuery("select n from NextNumber n where year = :actualYear", NextNumber.class);
             query.setParameter("actualYear", actualYear);
-            query.setLockMode(LockModeType.OPTIMISTIC);
+            query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
             return query.getSingleResult();
         } catch (NoResultException e) {
-            return new NextNumber(calendar.get(Calendar.YEAR), 0);
+            return new NextNumber(calendar.get(Calendar.YEAR), 1);
         }
     }
 
@@ -91,6 +93,8 @@ public class SaleServiceImpl implements SaleService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
+            tx.begin();
+
             sale.validate();
             var clientInDB = Optional.ofNullable(em.find(Client.class, sale.client().id()));
             if (clientInDB.isEmpty()) {
@@ -100,9 +104,12 @@ public class SaleServiceImpl implements SaleService {
             if (shoppingCart.isEmpty()) {
                 throw new EntityNotFoundException("El carrito de compras no existe");
             }
+            shoppingCart.get().perform();
+            NextNumber uniqueNumber = findUniqueNumber(em);
+            sale.nextNumber(uniqueNumber.recuperarSiguiente() + "-" + LocalDate.now().getYear());
             sale.init();
-            tx.begin();
             em.persist(sale);
+            em.merge(uniqueNumber);
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -110,7 +117,6 @@ public class SaleServiceImpl implements SaleService {
         } finally {
             if (em.isOpen())
                 em.close();
-            emf.close();
         }
     }
 }

@@ -1,8 +1,20 @@
 package ar.edu.tp.model;
 
-import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
-public abstract class Discount {
+import java.time.LocalDate;
+@Entity
+@Getter
+@Setter
+public class Discount {
+    @Id
+    @UuidGenerator
+    protected String id;
+
     protected LocalDate startDate;
     protected LocalDate endDate;
     protected int discountPercentage;
@@ -13,6 +25,10 @@ public abstract class Discount {
         this.startDate = startDate;
         this.endDate = endDate;
         this.discountPercentage = discountPercentage;
+    }
+
+    public Discount() {
+
     }
 
     private void validateDates(LocalDate startDate, LocalDate endDate) {

@@ -1,13 +1,27 @@
 package ar.edu.tp.model;
 
-import java.math.BigDecimal;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
+@Getter
+@Setter
+@Entity
 public class ItemProduct {
+    @UuidGenerator
+    @Id
+    private String id;
     private int quantity;
-    private final String code;
-    private final BigDecimal price;
-    private final Product product;
-    private final ShoppingCart shoppingCart;
+    private  String code;
+    private  BigDecimal price;
+    @ManyToOne
+    private  Product product;
+    @ManyToOne
+    private  ShoppingCart shoppingCart;
     public ItemProduct(Product product, int quantity, String code, ShoppingCart shoppingCart) {
         this.quantity = quantity;
         this.code = code;
@@ -15,6 +29,11 @@ public class ItemProduct {
         this.shoppingCart = shoppingCart;
         this.price = product.price().multiply(BigDecimal.valueOf(quantity));
     }
+
+    public ItemProduct() {
+
+    }
+
     public BigDecimal price() {
         return price;
     }
