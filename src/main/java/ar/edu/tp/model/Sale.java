@@ -28,7 +28,8 @@ public class Sale {
 
     public Sale(Client client,
                 ShoppingCart shoppingCart,
-                PaymentMethod paymentMethod, String uniqueNumber) {
+                PaymentMethod paymentMethod,
+                String uniqueNumber) {
         this.client = client;
         this.shoppingCart = shoppingCart;
         this.paymentMethod = paymentMethod;

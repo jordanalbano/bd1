@@ -15,7 +15,7 @@ public class SaleController {
         this.service = service;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Void> generateSale(@RequestBody Sale sale) {
         service.create(sale);
         return ResponseEntity.noContent().build();
