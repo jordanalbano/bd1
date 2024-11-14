@@ -1,5 +1,6 @@
 package ar.edu.tp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -21,6 +22,7 @@ public class ItemProduct {
     @ManyToOne
     private  Product product;
     @ManyToOne
+    @JsonBackReference
     private  ShoppingCart shoppingCart;
     public ItemProduct(Product product, int quantity, String code, ShoppingCart shoppingCart) {
         this.quantity = quantity;

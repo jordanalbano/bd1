@@ -8,6 +8,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -22,16 +23,17 @@ public class Product {
     private Category category;
     private BigDecimal price;
     @OneToMany
-    private List<Discount> discounts;
+    private List<BrandDiscount> discounts;
     @ManyToOne
     private Brand brand;
     @Version
     private Long version;
+
     public Product(String code,
                    String description,
                    Category category,
                    BigDecimal price,
-                   List<Discount> discounts,
+                   List<BrandDiscount> discounts,
                    Brand brand) {
         this.validate(code, description, category, price, discounts, brand);
         this.code = code;
@@ -47,7 +49,7 @@ public class Product {
     }
 
 
-    private void validate(String code, String description, Category category, BigDecimal price, List<Discount> discounts, Brand brand) {
+    private void validate(String code, String description, Category category, BigDecimal price, List<BrandDiscount> discounts, Brand brand) {
         if (code == null || code.isEmpty()) {
             throw new IllegalArgumentException("Code can't be null or empty");
         }
@@ -69,11 +71,21 @@ public class Product {
     }
 
     public BigDecimal price() {
-        return this.price;
+        return priceWithDiscounts();
     }
 
     public Brand brand() {
         return this.brand;
+    }
+
+    public BigDecimal priceWithDiscounts() {
+        var discountAvailable = this.discounts.stream()
+                .map(r -> r.calculatePriceWithDiscount(this.price))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (discountAvailable.compareTo(BigDecimal.ZERO) > 0) {
+            return discountAvailable;
+        }
+        return this.price;
     }
 
     public void update(Product newProduct) {

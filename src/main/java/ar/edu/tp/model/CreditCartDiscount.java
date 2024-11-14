@@ -1,16 +1,25 @@
 package ar.edu.tp.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-
+@Entity
 public class CreditCartDiscount extends Discount {
-    private final CreditCardProvider provider;
-    private final boolean state;
+    @ManyToOne
+    private  CreditCardProvider provider;
+    private  boolean state;
+
     public CreditCartDiscount(LocalDate startDate, LocalDate endDate, CreditCardProvider provider, int discount) {
         super(startDate, endDate, discount);
         this.provider = provider;
         this.state = true;
+    }
+
+    public CreditCartDiscount() {
+
     }
 
     public BigDecimal calculateDiscountedPrice(BigDecimal totalBuyPrice) {

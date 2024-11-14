@@ -7,10 +7,12 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
     database: mysql
     open-in-view: true
     generate-ddl: true
+  mvc:
+    converters:
+      preferred-json-mapper: gson
 
 springdoc:
   api-docs:

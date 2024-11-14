@@ -4,9 +4,18 @@ import ar.edu.tp.api.SaleService;
 import ar.edu.tp.model.*;
 import ar.edu.tp.exceptions.BadRequestException;
 import ar.edu.tp.exceptions.EntityNotFoundException;
+import ar.edu.tp.utils.Mapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.google.gson.Gson;
 import jakarta.persistence.*;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
 
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -15,16 +24,22 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
+@Log4j2
 public class SaleServiceImpl implements SaleService {
     private final EntityManagerFactory emf;
-
-    public SaleServiceImpl(EntityManagerFactory emf) {
-
+    private final Jedis jedis;
+    private ObjectMapper objectMapper;
+    private Mapper mapper;
+    public SaleServiceImpl(EntityManagerFactory emf, ObjectMapper objectMapper, Mapper mapper) {
+        this.objectMapper = objectMapper;
+        this.mapper = mapper;
+        this.jedis = new Jedis("localhost", 6379);
         this.emf = emf;
+        this.objectMapper.findAndRegisterModules();
     }
 
     @Override
-
     public void makeSale(Long clientId, List<Long> products, Long cardId) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -58,11 +73,12 @@ public class SaleServiceImpl implements SaleService {
         }
 
     }
+
     private List<Product> findAllProducts(EntityManager em, List<Long> products) {
         return em.createQuery("SELECT p " +
-                "FROM Product p WHERE p.id IN :products", Product.class)
-            .setParameter("products", products)
-            .getResultList();
+                        "FROM Product p WHERE p.id IN :products", Product.class)
+                .setParameter("products", products)
+                .getResultList();
     }
 
     private NextNumber findUniqueNumber(EntityManager em) {
@@ -94,7 +110,6 @@ public class SaleServiceImpl implements SaleService {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-
             sale.validate();
             var clientInDB = Optional.ofNullable(em.find(Client.class, sale.client().id()));
             if (clientInDB.isEmpty()) {
@@ -107,6 +122,7 @@ public class SaleServiceImpl implements SaleService {
             shoppingCart.get().perform();
             NextNumber uniqueNumber = findUniqueNumber(em);
             sale.nextNumber(uniqueNumber.recuperarSiguiente() + "-" + LocalDate.now().getYear());
+            sale.assignShoppingCart(shoppingCart.get());
             sale.init();
             em.persist(sale);
             em.merge(uniqueNumber);
@@ -117,6 +133,50 @@ public class SaleServiceImpl implements SaleService {
         } finally {
             if (em.isOpen())
                 em.close();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SaleDto> getLastThreeSalesByClientId(String id) {
+        var sales = this.getLastThreeSalesByClientIdInCache(id);
+        if (!sales.isEmpty()) {
+            return sales.stream().map(mapper::convert).toList();
+        }
+        EntityManager em = emf.createEntityManager();
+        var client = Optional.ofNullable(em.find(Client.class, id));
+        if (client.isEmpty()) {
+            throw new EntityNotFoundException("El cliente no existe");
+        }
+        sales = em.createQuery("SELECT s FROM Sale s WHERE s.client = :client ORDER BY s.createdOn DESC", Sale.class)
+                .setParameter("client", client.get())
+                .setMaxResults(3)
+                .getResultList();
+        ObjectMapper jsonMapper = new ObjectMapper();
+        jsonMapper.findAndRegisterModules();
+        this.jedis.set(id, this.convert(sales));
+        return sales.stream().map(mapper::convert).toList();
+    }
+
+    private String convert(List<Sale> sales) {
+        try {
+            return this.objectMapper.writeValueAsString(sales);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SneakyThrows
+    public List<Sale> getLastThreeSalesByClientIdInCache(String id) {
+        var res = Optional.ofNullable(this.jedis.get(id));
+        return res.map(this::convert).orElse(List.of());
+    }
+
+    private List<Sale> convert(String s) {
+        try {
+            return List.of(this.objectMapper.readValue(s, Sale[].class));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -63,7 +63,7 @@ public class Store {
     public BigDecimal calculateTotalAmountOfCart(ShoppingCart shoppingCart, CreditCardProvider creditCartProvider) {
         var totalAmountWithDiscountBran = shoppingCart.getProductItems().stream().map(r -> {
             var discountOptional = this.brandDiscounts.stream().filter(discount -> discount.isActive() && discount.applicableToBrand(r.productBrand())).findFirst();
-            return discountOptional.map(brandDiscount -> r.price().subtract(brandDiscount.calculateDiscountedPrice(r.price()))).orElseGet(r::price);
+            return discountOptional.map(brandDiscount -> r.price().subtract(brandDiscount.calculatePriceWithDiscount(r.price()))).orElseGet(r::price);
         }).reduce(BigDecimal.ZERO, BigDecimal::add);
         return calculateDiscountsForCreditCard(this.creditCartDiscounts, totalAmountWithDiscountBran, creditCartProvider);
     }
@@ -85,7 +85,7 @@ public class Store {
 
         for (ItemProduct product : shoppingCart.productItems()) {
             if (product.productBrand().name().equalsIgnoreCase(brandName) && brandDiscount.isPresent()) {
-                totalAmount = totalAmount.add(product.price().subtract(brandDiscount.get().calculateDiscountedPrice(product.price())));
+                totalAmount = totalAmount.add(product.price().subtract(brandDiscount.get().calculatePriceWithDiscount(product.price())));
             } else {
                 totalAmount = totalAmount.add(product.price());
             }

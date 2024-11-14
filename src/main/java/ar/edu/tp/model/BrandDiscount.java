@@ -1,18 +1,27 @@
 package ar.edu.tp.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+@Entity
 
 public class BrandDiscount extends Discount {
-    private final Brand brand;
+    @ManyToOne
+    private  Brand brand;
 
     public BrandDiscount(Brand brand, LocalDate startDate, LocalDate endDate, int discountPercentage) {
         super(startDate, endDate, discountPercentage);
         this.brand = brand;
     }
 
-    public BigDecimal calculateDiscountedPrice(BigDecimal priceProduct) {
+    public BrandDiscount() {
+
+    }
+
+    public BigDecimal calculatePriceWithDiscount(BigDecimal priceProduct) {
         if (!discountByBrandAvailable(brand)) {
             return priceProduct;
         }

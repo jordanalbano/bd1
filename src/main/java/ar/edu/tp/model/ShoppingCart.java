@@ -5,21 +5,24 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
+
 @Getter
 @Entity
 @Setter
 
-public class ShoppingCart {
+public class ShoppingCart implements Serializable {
     @Id
     @UuidGenerator
-    private  String id;
+    private String id;
     @ManyToOne
-    private  Client client;
+    private Client client;
     @OneToMany(mappedBy = "shoppingCart")
     private Set<ItemProduct> productItems;
     private BigDecimal total;
+
     public ShoppingCart(Client client) {
         this.id = UUID.randomUUID().toString();
         this.client = client;
@@ -30,7 +33,7 @@ public class ShoppingCart {
     }
 
     public BigDecimal calculateTotal() {
-        return productItems.stream().map(ItemProduct::price).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return productItems.stream().reduce(BigDecimal.ZERO, (subtotal, item) -> subtotal.add(item.price().multiply(BigDecimal.valueOf(item.quantity()))), BigDecimal::add);
     }
 
 

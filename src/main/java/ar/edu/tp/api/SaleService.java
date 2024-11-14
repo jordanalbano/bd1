@@ -1,6 +1,7 @@
 package ar.edu.tp.api;
 
 import ar.edu.tp.model.Sale;
+import ar.edu.tp.model.SaleDto;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface SaleService {
     List<Sale> ventas();
 
     void create(Sale sale);
+
+    List<SaleDto> getLastThreeSalesByClientId(String id);
 }
