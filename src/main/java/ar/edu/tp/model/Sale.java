@@ -1,5 +1,6 @@
 package ar.edu.tp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,8 @@ public class Sale implements Serializable {
     @UuidGenerator
     @Id
     private String id;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+
     private LocalDate createdOn;
     @ManyToOne
     private Client client;

@@ -7,11 +7,8 @@ import ar.edu.tp.exceptions.EntityNotFoundException;
 import ar.edu.tp.utils.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.google.gson.Gson;
 import jakarta.persistence.*;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +28,7 @@ public class SaleServiceImpl implements SaleService {
     private final Jedis jedis;
     private ObjectMapper objectMapper;
     private Mapper mapper;
+
     public SaleServiceImpl(EntityManagerFactory emf, ObjectMapper objectMapper, Mapper mapper) {
         this.objectMapper = objectMapper;
         this.mapper = mapper;
@@ -105,9 +103,10 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public void create(Sale sale) {
+    public void create(SaleDto saleDto) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
+        var sale = mapper.convert(saleDto);
         try {
             tx.begin();
             sale.validate();
@@ -144,18 +143,25 @@ public class SaleServiceImpl implements SaleService {
             return sales.stream().map(mapper::convert).toList();
         }
         EntityManager em = emf.createEntityManager();
+        var client = this.getClientById(id, em);
+        sales = this.getSales(client, em);
+        this.jedis.set(id, this.convert(sales));
+        return sales.stream().map(mapper::convert).toList();
+    }
+
+    private List<Sale> getSales(Client client, EntityManager em) {
+        return em.createQuery("SELECT s FROM Sale s WHERE s.client = :client ORDER BY s.createdOn DESC", Sale.class)
+                .setParameter("client", client)
+                .setMaxResults(3)
+                .getResultList();
+    }
+
+    private Client getClientById(String id, EntityManager em) {
         var client = Optional.ofNullable(em.find(Client.class, id));
         if (client.isEmpty()) {
             throw new EntityNotFoundException("El cliente no existe");
         }
-        sales = em.createQuery("SELECT s FROM Sale s WHERE s.client = :client ORDER BY s.createdOn DESC", Sale.class)
-                .setParameter("client", client.get())
-                .setMaxResults(3)
-                .getResultList();
-        ObjectMapper jsonMapper = new ObjectMapper();
-        jsonMapper.findAndRegisterModules();
-        this.jedis.set(id, this.convert(sales));
-        return sales.stream().map(mapper::convert).toList();
+        return client.get();
     }
 
     private String convert(List<Sale> sales) {

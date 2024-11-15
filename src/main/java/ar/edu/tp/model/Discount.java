@@ -1,5 +1,6 @@
 package ar.edu.tp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
@@ -14,8 +15,11 @@ public class Discount {
     @Id
     @UuidGenerator
     protected String id;
+    @JsonFormat(pattern = "yyyy-MM-dd")
 
     protected LocalDate startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+
     protected LocalDate endDate;
     protected int discountPercentage;
 

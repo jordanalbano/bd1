@@ -20,7 +20,7 @@ public interface SaleService {
     //Devuelve todas las ventas realizadas
     List<Sale> ventas();
 
-    void create(Sale sale);
+    void create(SaleDto sale);
 
     List<SaleDto> getLastThreeSalesByClientId(String id);
 }

@@ -12,5 +12,5 @@ import java.util.List;
 /**
  * DTO for {@link Sale}
  */
-public record SaleDto(String id, String createdOn, ClientDto client, ShoppingCartDto shoppingCart, PaymentMethod paymentMethod, BigDecimal totalPrice, String uniqueNumber, List<CreditCartDiscountDto> discounts) implements Serializable {
+public record SaleDto(String id, LocalDate createdOn, ClientDto client, ShoppingCartDto shoppingCart, PaymentMethod paymentMethod, BigDecimal totalPrice, String uniqueNumber, List<CreditCartDiscountDto> discounts) implements Serializable {
   }
