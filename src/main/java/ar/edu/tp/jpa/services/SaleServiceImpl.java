@@ -138,13 +138,13 @@ public class SaleServiceImpl implements SaleService {
     @Override
     @Transactional(readOnly = true)
     public List<SaleDto> getLastThreeSalesByClientId(String id) {
-        var sales = this.getLastThreeSalesByClientIdInCache(id);
-        if (!sales.isEmpty()) {
-            return sales.stream().map(mapper::convert).toList();
+        var salesInCache = this.getLastThreeSalesByClientIdInCache(id);
+        if (!salesInCache.isEmpty()) {
+            return salesInCache.stream().map(mapper::convert).toList();
         }
         EntityManager em = emf.createEntityManager();
         var client = this.getClientById(id, em);
-        sales = this.getSales(client, em);
+        var sales = this.getSales(client, em);
         this.jedis.set(id, this.convert(sales));
         return sales.stream().map(mapper::convert).toList();
     }
